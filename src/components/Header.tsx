@@ -19,7 +19,7 @@ export function Header() {
           href="/"
           className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
         >
-          CLIENT
+          Alu-on group
         </Link>
 
         <nav

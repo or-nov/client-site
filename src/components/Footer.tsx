@@ -19,7 +19,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-between">
           <span className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            CLIENT
+            Alu-on group
           </span>
           <nav
             className="flex flex-wrap items-center justify-center gap-6"
@@ -37,7 +37,7 @@ export function Footer() {
           </nav>
         </div>
         <p className="mt-8 border-t border-zinc-200/60 pt-8 text-center text-sm text-zinc-500 dark:border-zinc-800/60 dark:text-zinc-400">
-          © {year} CLIENT. All rights reserved.
+          © {year} Alu-on group. All rights reserved.
         </p>
       </div>
     </footer>

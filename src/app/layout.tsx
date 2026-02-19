@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CLIENT",
-  description: "CLIENT",
+  title: "Alu-on group | מעטפת הבניין",
+  description:
+    "פתרונות מתקדמים למעטפת הבניין: אלוקובונד, HPL, אלומיניום וקירות מסך.",
 };
 
 export default function RootLayout({
