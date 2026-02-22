@@ -1,9 +1,12 @@
-import { PageRenderer } from "@/components/PageRenderer";
+import { siteContent } from "@/content/siteContent";
+import { SelectedProjectsSection } from "@/components/sections/SelectedProjectsSection";
 
 export default function ProjectsPage() {
+  const { projectsPreview } = siteContent.home;
+
   return (
     <div dir="rtl">
-      <PageRenderer pageKey="projects" />
+      <SelectedProjectsSection items={projectsPreview} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ type ButtonProps = {
   className?: string;
   variant?: "primary" | "secondary" | "ghost";
   onClick?: () => void;
+  disabled?: boolean;
 };
 
 const base =
@@ -25,6 +26,7 @@ export function Button({
   className = "",
   variant = "primary",
   onClick,
+  disabled,
 }: ButtonProps) {
   const variantClass = variant === "ghost" ? ghost : variant === "secondary" ? secondary : primary;
   const classes = `${base} ${variantClass} ${className}`;
@@ -32,7 +34,7 @@ export function Button({
     return <a href={href} className={classes}>{children}</a>;
   }
   return (
-    <button type={type} className={classes} onClick={onClick}>
+    <button type={type} className={classes} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );

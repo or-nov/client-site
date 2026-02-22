@@ -1,0 +1,71 @@
+/**
+ * Aluron.co.il – Header slim fix (paste into Additional CSS)
+ * Forces slim height, smaller logo, semi-transparent dark grey + blur.
+ * All rules use !important to override Elementor.
+ */
+
+/* Header section – force slim padding (5px top/bottom) */
+.elementor-location-header .elementor-section-wrap,
+.elementor-location-header .elementor-section,
+.elementor-location-header .elementor-top-section,
+body .elementor-location-header {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  min-height: unset !important;
+  height: auto !important;
+}
+
+.elementor-location-header .elementor-container {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+/* Background: semi-transparent dark grey + glass blur */
+.elementor-location-header .elementor-section-wrap,
+.elementor-location-header .elementor-section,
+.elementor-location-header .elementor-top-section,
+.elementor-location-header,
+header.elementor-location-header,
+body .elementor-location-header {
+  background-color: rgba(30, 30, 30, 0.7) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Sticky header – same treatment */
+.elementor-sticky--effects.elementor-location-header .elementor-section-wrap,
+.elementor-sticky--effects.elementor-location-header .elementor-section {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  background-color: rgba(30, 30, 30, 0.7) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Logo – max-height 50px so it doesn’t stretch the bar */
+.elementor-location-header img,
+.elementor-location-header .elementor-widget-image img,
+.elementor-location-header .elementor-widget-container img,
+.elementor-location-header .site-logo img,
+.elementor-location-header .custom-logo-link img,
+header.elementor-location-header img {
+  max-height: 50px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+.elementor-location-header .elementor-widget-image,
+.elementor-location-header .elementor-widget-container .elementor-widget-image {
+  max-height: 50px !important;
+}
+
+.elementor-location-header .custom-logo-link,
+.elementor-location-header .site-logo {
+  max-height: 50px !important;
+}
+
+.elementor-location-header .custom-logo-link img,
+.elementor-location-header .site-logo img {
+  max-height: 50px !important;
+}

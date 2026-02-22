@@ -3,15 +3,20 @@ import Image from "next/image";
 import { siteContent } from "@/content/siteContent";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { Heading } from "@/components/ui/Heading";
 import { Prose } from "@/components/ui/Prose";
 import { Media } from "@/components/ui/Media";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { HeroQuoteCTA } from "@/components/HeroQuoteCTA";
+import { RevealMotion } from "@/components/RevealMotion";
+import { AnimatedCard } from "@/components/AnimatedCard";
+import { SectionDivider } from "@/components/ui/SectionDivider";
+import { HomeIntroSplit } from "@/components/sections/HomeIntroSplit";
+import { HomeValuesSection } from "@/components/sections/HomeValuesSection";
+import { HomeQuoteForm } from "@/components/sections/HomeQuoteForm";
 
 const { home } = siteContent;
-const { hero, solutions, whyUs, projectsPreview } = home;
+const { hero, solutions } = home;
 
 /** Split title so last word can get accent underline (RTL: last word = leftmost) */
 function HeroTitle({ title }: { title: string }) {
@@ -27,14 +32,74 @@ function HeroTitle({ title }: { title: string }) {
   );
 }
 
-function SolutionIcon() {
+type ServiceIconType = "download" | "layout" | "wrench" | "cpu";
+
+const iconWrapperClass =
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--background-card)] shadow-[var(--shadow-sm)]";
+const iconSvgClass = "h-5 w-5 text-[var(--foreground)]";
+
+/** Per-category icon for Solutions cards (same size/stroke as original). */
+function SolutionIconFor({ href }: { href: string }) {
+  const isCurtainWalls = href.includes("curtain-walls");
+  const isHpl = href.includes("hpl");
+  const isAlucobond = href.includes("alucobond");
+  const isAluminum = href.includes("aluminum");
+
+  const defaultBuildingPath =
+    "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4";
+
   return (
-    <div
-      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--background-card)] shadow-[var(--shadow-sm)]"
-      aria-hidden
-    >
-      <svg className="h-5 w-5 text-[var(--foreground)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+    <div className={iconWrapperClass} aria-hidden>
+      <svg className={iconSvgClass} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        {isCurtainWalls && <path strokeLinecap="round" strokeLinejoin="round" d={defaultBuildingPath} />}
+        {isHpl && (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16v3H4V6zm0 5h16v3H4v-3zm0 5h16v3H4v-3z" />
+        )}
+        {isAlucobond && (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16v12H4V6zm2 2v8h12V8H6z" />
+        )}
+        {isAluminum && <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />}
+        {!isCurtainWalls && !isHpl && !isAlucobond && !isAluminum && (
+          <path strokeLinecap="round" strokeLinejoin="round" d={defaultBuildingPath} />
+        )}
+      </svg>
+    </div>
+  );
+}
+
+/** Icons for Services cards: Wrench, Cpu, Layout, Download (Heroicons-style). */
+function ServiceIcon({ type }: { type: ServiceIconType }) {
+  const svgProps = {
+    className: iconSvgClass,
+    fill: "none" as const,
+    stroke: "currentColor",
+    viewBox: "0 0 24 24",
+    strokeWidth: 2,
+  };
+  return (
+    <div className={iconWrapperClass} aria-hidden>
+      <svg {...svgProps}>
+        {type === "wrench" && (
+          <>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l2.496-3.03c.527-.534.527-1.397 0-1.93l-4.869-4.869a1.25 1.25 0 00-1.768 0L6.5 10.5" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </>
+        )}
+        {type === "cpu" && (
+          <>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+          </>
+        )}
+        {type === "layout" && (
+          <>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15A2.25 2.25 0 016 12.75h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018 20.25H6A2.25 2.25 0 013.75 18v-3zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25h-2.25a2.25 2.25 0 01-2.25-2.25v-3z" />
+          </>
+        )}
+        {type === "download" && (
+          <>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9l4.5 4.5m0 0l4.5-4.5m-4.5 4.5V3" />
+          </>
+        )}
       </svg>
     </div>
   );
@@ -42,7 +107,7 @@ function SolutionIcon() {
 
 export default function Home() {
   return (
-    <div dir="rtl" className="min-h-screen">
+    <div dir="rtl" className="min-h-screen relative">
       {/* 1) Hero with background image (full-width section, no Section Container) */}
       <section
         id="hero"
@@ -98,117 +163,141 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 2) Solutions */}
-      <Section
-        id="solutions"
-        title="הפתרונות שלנו"
-        className="bg-[var(--background)]"
-      >
+      <SectionDivider />
+
+      {/* 2) Intro: text right, image left (RTL) */}
+      <RevealMotion>
+        <HomeIntroSplit />
+      </RevealMotion>
+
+      <SectionDivider />
+
+      {/* 3) Solutions — same structure/card styling as HomeValuesSection */}
+      <Section id="solutions" className="bg-[var(--background)]">
         <Container>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {solutions.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group block h-full"
-              >
-                <Card className="flex h-full flex-col gap-4 p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lg)] hover:border-[var(--border)]">
-                  {item.image ? (
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
-                      <Media src={item.image} ratio="4/3" sizes="(max-width: 1024px) 50vw, 25vw" />
-                    </div>
-                  ) : (
-                    <SolutionIcon />
-                  )}
-                  <Heading as="h3">{item.title}</Heading>
-                  {item.description && (
-                    <Prose className="text-sm text-zinc-600 dark:text-zinc-400">
-                      <p>{item.description}</p>
-                    </Prose>
-                  )}
-                  <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-[var(--foreground)] underline-offset-4 transition-all group-hover:gap-2 group-hover:underline">
-                    לפרטים
-                    <span aria-hidden>←</span>
-                  </span>
-                </Card>
-              </Link>
+          <RevealMotion>
+            <div className="text-center">
+              <h2 className="section-title">
+                הפתרונות שלנו
+              </h2>
+              <p className="section-subtitle">
+                מגוון חומרים וטכנולוגיות מתקדמות למעטפת בניין מושלמת.
+              </p>
+            </div>
+          </RevealMotion>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {solutions.map((item, i) => (
+              <RevealMotion key={item.href} delay={i * 0.1}>
+                <Link href={item.href} className="group block h-full">
+                  <AnimatedCard className="h-full">
+                    <Card className="values-card flex h-full flex-col items-center p-8 text-center transition-colors duration-200 hover:border-[var(--border)]">
+                      {item.image ? (
+                        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
+                          <Media src={item.image} ratio="4/3" sizes="(max-width: 1024px) 50vw, 33vw" />
+                        </div>
+                      ) : (
+                        <SolutionIconFor href={item.href} />
+                      )}
+                      <h3 className="card-title mt-5">{item.title}</h3>
+                    {item.description && (
+                      <Prose className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+                        <p>{item.description}</p>
+                      </Prose>
+                    )}
+                    <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-[var(--foreground)] underline-offset-4 transition-all group-hover:gap-2 group-hover:underline">
+                      לפרטים
+                      <span aria-hidden>←</span>
+                    </span>
+                  </Card>
+                  </AnimatedCard>
+                </Link>
+              </RevealMotion>
             ))}
           </div>
         </Container>
       </Section>
 
-      {/* 3) Projects preview */}
-      <Section id="projects-preview" title="פרויקטים נבחרים">
+      {/* Values: דיוק, עמידות, עיצוב */}
+      <HomeValuesSection id="values" />
+
+      <SectionDivider />
+
+      {/* 4) Our Services — same layout and card style as Solutions */}
+      <Section id="services" className="bg-[var(--background)]">
         <Container>
-          {projectsPreview.length > 0 ? (
-            <>
-              <div className="mb-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                {projectsPreview.map((item, i) => (
-                  <Link
-                    key={i}
-                    href="/projects"
-                    className="group relative block overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--background-card)] shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]"
-                  >
-                    {item.image ? (
-                      <div className="relative aspect-[4/3]">
-                        <Media
-                          src={item.image}
-                          ratio="4/3"
-                          sizes="(max-width: 640px) 100vw, 33vw"
-                        />
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                          <span className="text-sm font-medium text-white">{item.title}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="aspect-[4/3] w-full bg-[var(--border-subtle)]" aria-hidden />
-                    )}
-                  </Link>
-                ))}
-              </div>
-              <Button href="/projects" variant="secondary">
-                לכל הפרויקטים
-              </Button>
-            </>
-          ) : (
-            <Button href="/projects" variant="secondary">
-              לכל הפרויקטים
-            </Button>
-          )}
-        </Container>
-      </Section>
-
-      {/* 4) Why us */}
-      <Section id="why-us" title={whyUs.title} className="bg-[var(--background)]">
-        <Container className="max-w-3xl">
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {whyUs.items.map((item, i) => (
-              <Card
-                as="li"
-                key={i}
-                className="px-5 py-4 transition-all duration-200 hover:shadow-[var(--shadow-md)]"
-              >
-                <span className="text-[var(--foreground)]">{item}</span>
-              </Card>
+          <RevealMotion>
+            <div className="text-center">
+              <h2 className="section-title">
+                השירותים שלנו
+              </h2>
+              <p className="section-subtitle">
+                ממעטפת מלאה של שירותים המבטיחה איכות ודיוק בכל שלב בפרויקט.
+              </p>
+            </div>
+          </RevealMotion>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {(
+              [
+                {
+                  title: "ייבוא חומרים",
+                  description:
+                    "אנו מייבאים את חומרי הגלם האיכותיים ביותר, כולל פאנלי HPL וקומפוזיט מהיצרנים המובילים בעולם.",
+                  icon: "wrench",
+                },
+                {
+                  title: "תכנון והדמיה",
+                  description:
+                    "צוות התכנון שלנו מספק שירותי הדמיה ושרטוטים טכניים (Shop Drawings) להמחשת הפתרון המושלם.",
+                  icon: "cpu",
+                },
+                {
+                  title: "ייצור ועיבוד",
+                  description:
+                    "במפעל המתקדם שלנו, אנו מעבדים HPL ואלומיניום בטכנולוגיית CNC מדויקת לפי דרישות הפרויקט.",
+                  icon: "layout",
+                },
+                {
+                  title: "אביזרים והתקנה",
+                  description:
+                    "אנו מספקים את כל האביזרים הנלווים ומבצעים התקנה מקצועית העומדת בתקנים המחמירים ביותר.",
+                  icon: "download",
+                },
+              ] as const
+            ).map((item, i) => (
+              <RevealMotion key={item.title} delay={i * 0.1}>
+                <Link href="/contact" className="group block h-full">
+                  <AnimatedCard className="h-full">
+                    <Card className="values-card flex h-full flex-col items-center rounded-2xl p-8 text-center transition-colors duration-200 hover:border-[var(--border)]">
+                      <ServiceIcon type={item.icon} />
+                    <h3 className="card-title mt-5">
+                      {item.title}
+                    </h3>
+                      <Prose className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+                        <p>{item.description}</p>
+                      </Prose>
+                      <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-[var(--foreground)] underline-offset-4 transition-all group-hover:gap-2 group-hover:underline">
+                        לפרטים
+                        <span aria-hidden>←</span>
+                      </span>
+                    </Card>
+                  </AnimatedCard>
+                </Link>
+              </RevealMotion>
             ))}
-          </ul>
+          </div>
         </Container>
       </Section>
 
-      {/* 5) Bottom CTA */}
-      <Section id="contact-cta">
-        <Container className="max-w-2xl">
-          <Card className="flex flex-col items-center gap-6 rounded-[var(--radius-xl)] p-8 text-center md:p-12">
-            <Heading as="h2">מעוניינים לשמוע עוד?</Heading>
-            {hero.ctaSummary && (
-              <Prose className="text-center">
-                <p>{hero.ctaSummary}</p>
-              </Prose>
-            )}
-            <Button href="/contact">דברו איתנו</Button>
-          </Card>
-        </Container>
-      </Section>
+      <SectionDivider />
+
+      {/* 5) Contact / Quote form */}
+      <RevealMotion>
+        <Section id="contact-cta" className="py-16 md:py-20">
+          <Container>
+            <HomeQuoteForm />
+          </Container>
+        </Section>
+      </RevealMotion>
     </div>
   );
 }

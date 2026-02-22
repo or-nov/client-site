@@ -21,6 +21,14 @@ type RawPage = {
   paragraphs?: string[];
   bullets?: string[];
   images?: string[];
+  date?: string;
+};
+
+/** Article publish dates (ISO date string). Used when raw content has no date. Last 7 days. */
+export const ARTICLE_PUBLISH_DATES: Record<string, string> = {
+  "alucobond-facade-cladding-guide": "2025-02-19",
+  "hpl-exterior-cladding-israel": "2025-02-18",
+  "curtain-wall-systems-architectural-guide": "2025-02-17",
 };
 
 const PAGE_KEYS = ["about", "projects", "articles", "contact"] as const;
@@ -184,6 +192,7 @@ function buildSiteContent(raw: Record<string, unknown>) {
     excerpt: string;
     blocks: ContentBlock[];
     images: string[];
+    date: string;
   }> = [];
   for (const key of Object.keys(raw)) {
     if (!key.startsWith("articles__")) continue;
@@ -199,14 +208,20 @@ function buildSiteContent(raw: Record<string, unknown>) {
       bullets,
       images,
     });
+    const date =
+      (typeof page.date === "string" && page.date) ||
+      ARTICLE_PUBLISH_DATES[slug] ||
+      new Date().toISOString().slice(0, 10);
     articles.push({
       slug,
       title: safeText(page.h1 ?? page.title) || slug,
       excerpt,
       blocks,
       images,
+      date,
     });
   }
+  articles.sort((a, b) => (b.date < a.date ? -1 : b.date > a.date ? 1 : 0));
 
   return {
     home: { hero, solutions, whyUs, projectsPreview },

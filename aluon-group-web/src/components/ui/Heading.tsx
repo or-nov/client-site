@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 
+/* מקור טיפוגרפיה: אזור אדריכלים – כותרת ראשית text-3xl md:text-4xl, font-bold, tracking-tight */
 const styles = {
-  h1: "text-start text-3xl font-bold leading-tight tracking-tight text-[var(--foreground)] sm:text-4xl md:text-5xl",
-  h2: "text-start text-2xl font-semibold tracking-tight text-[var(--foreground)] md:text-3xl",
-  h3: "text-start text-lg font-semibold text-[var(--foreground)] md:text-xl",
+  h1: "font-heading text-3xl font-bold leading-tight tracking-tight text-[var(--foreground)] md:text-4xl",
+  h2: "font-heading text-2xl font-bold tracking-tight text-[var(--foreground)] md:text-3xl",
+  h3: "font-heading text-lg font-semibold text-[var(--foreground)] md:text-xl",
 } as const;
 
 type HeadingProps = {

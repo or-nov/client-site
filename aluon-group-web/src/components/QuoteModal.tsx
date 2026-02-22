@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+
+const API_SEND_FORM = "/api/send-form";
 
 const MATERIAL_OPTIONS = [
   { value: "", label: "בחירת חומר" },
@@ -19,6 +21,12 @@ type QuoteModalProps = {
 
 export function QuoteModal({ open, onOpenChange }: QuoteModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (open) setSubmitError(null);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -35,10 +43,37 @@ export function QuoteModal({ open, onOpenChange }: QuoteModalProps) {
     if (e.target === e.currentTarget) onOpenChange(false);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: submit form data when API/backend is available
-    onOpenChange(false);
+    setSubmitError(null);
+    setSubmitting(true);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const fields: Record<string, string> = {};
+    fd.forEach((value, key) => {
+      fields[key] = String(value);
+    });
+    try {
+      const res = await fetch(API_SEND_FORM, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formType: "quote-modal",
+          source: typeof window !== "undefined" ? window.location.href : "",
+          fields,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubmitError(data.error || "שליחה נכשלה. נסו שוב.");
+        return;
+      }
+      onOpenChange(false);
+    } catch {
+      setSubmitError("שליחה נכשלה. נסו שוב.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -76,6 +111,12 @@ export function QuoteModal({ open, onOpenChange }: QuoteModalProps) {
         <p className="mt-1 text-zinc-600 dark:text-zinc-400">
           מלאו את הפרטים ונציג מומחה יחזור אליכם בהקדם.
         </p>
+
+        {submitError && (
+          <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/30 dark:text-red-200">
+            {submitError}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -159,8 +200,8 @@ export function QuoteModal({ open, onOpenChange }: QuoteModalProps) {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button type="submit">
-              שליחת בקשה להצעת מחיר
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "שולח..." : "שליחת בקשה להצעת מחיר"}
             </Button>
             <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
               ביטול
