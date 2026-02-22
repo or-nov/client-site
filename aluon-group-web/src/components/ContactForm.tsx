@@ -61,7 +61,7 @@ const baseInput =
 const inputError = "border-red-500 focus:ring-red-500 focus:border-red-500";
 const labelClass = "mb-1 block text-sm font-medium text-[var(--foreground)]";
 
-const API_SEND_FORM = "/api/send-form";
+const API_SEND_FORM = process.env.NEXT_PUBLIC_LEAD_ENDPOINT || "/api/send-form";
 
 export function ContactForm() {
   const [department, setDepartment] = useState<Department>("sales");

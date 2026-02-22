@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "aluon-new",
+    "public": "out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  },
+  "functions": {
+    "source": "functions"
+  }
+}

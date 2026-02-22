@@ -15,7 +15,7 @@ const MATERIAL_OPTIONS = [
 const inputBaseClass =
   "w-full rounded-xl border border-[var(--border)] bg-[var(--background-card)] px-4 py-3 text-[var(--foreground)] transition-colors placeholder:text-zinc-400 focus:border-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--foreground)]/20";
 
-const API_SEND_FORM = "/api/send-form";
+const API_SEND_FORM = process.env.NEXT_PUBLIC_LEAD_ENDPOINT || "/api/send-form";
 
 export function HomeQuoteForm() {
   const [fullName, setFullName] = useState("");

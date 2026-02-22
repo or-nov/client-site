@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
-const API_SEND_FORM = "/api/send-form";
+const API_SEND_FORM = process.env.NEXT_PUBLIC_LEAD_ENDPOINT || "/api/send-form";
 
 const MATERIAL_OPTIONS = [
   { value: "", label: "בחירת חומר" },
